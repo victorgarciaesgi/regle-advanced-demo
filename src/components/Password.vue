@@ -1,0 +1,94 @@
+<template>
+  <div class="block">
+    <label class="text-gray-700" v-if="label">
+      {{ label }}<span v-if="field.$isRequired" class="text-red-400">*</span>
+    </label>
+    <input
+      v-model="modelValue"
+      type="password"
+      :class="{ 'border-green-500': field.$valid, 'border-red-400': field.$error }"
+      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+      :placeholder
+    />
+    <div
+      v-if="modelValue"
+      class="password-strength"
+      :class="[`level-${field.$rules.strongPassword.$metadata.result?.id}`]"
+    ></div>
+    <ul v-if="field.$tooltips.length" class="tooltips">
+      <li v-for="tooltip of field.$tooltips" :key="tooltip">
+        {{ tooltip }}
+      </li>
+    </ul>
+    <div v-else-if="field.$valid" class="success">Your password is strong enough</div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import type { useCustomRegle } from '../validations/regle.global.config';
+import {
+  type InferRegleShortcuts,
+  type Maybe,
+  type RegleEnforceCustomRequiredRules,
+  type RegleFieldStatus,
+} from '@regle/core';
+import { computed } from 'vue';
+
+const modelValue = defineModel<Maybe<string>>();
+
+const props = defineProps<{
+  field: RegleFieldStatus<
+    string,
+    RegleEnforceCustomRequiredRules<typeof useCustomRegle, 'strongPassword'>,
+    InferRegleShortcuts<typeof useCustomRegle>
+  >;
+  label?: string;
+  placeholder: string;
+}>();
+</script>
+
+<style lang="scss" scoped>
+.password-strength {
+  margin: 8px 8px 0 8px;
+  width: calc(100% - 15px);
+  height: 4px;
+  border-radius: 4px;
+  border: 1px solid var(--vp-c-border);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 100%;
+    background-color: var(--vp-c-form-error);
+    transition: width 0.2s ease;
+  }
+
+  &.level-0 {
+    &::before {
+      width: 10%;
+    }
+  }
+  &.level-1 {
+    &::before {
+      width: 40%;
+      background-color: var(--vp-c-warning-2);
+    }
+  }
+  &.level-2 {
+    &::before {
+      width: 75%;
+      background-color: var(--vp-c-brand-1);
+    }
+  }
+  &.level-3 {
+    &::before {
+      width: 100%;
+      background-color: var(--vp-c-brand-1);
+    }
+  }
+}
+</style>

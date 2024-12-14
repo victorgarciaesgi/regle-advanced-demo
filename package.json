@@ -10,8 +10,9 @@
   },
   "dependencies": {
     "vue": "3.5.11",
-    "@regle/core": "0.4.0",
-    "@regle/rules": "0.4.0"
+    "@regle/core": "0.4.1",
+    "@regle/rules": "0.4.1",
+    "check-password-strength": "2.0.10"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
